@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
+// Creates the Nav header buttons
 const Nav = () =>(
     <nav className="main-nav">
         <ul>

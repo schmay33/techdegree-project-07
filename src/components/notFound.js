@@ -1,5 +1,6 @@
 import React from 'react';
 
+// Used to display no results found
 const NotFound = () =>(
     <ul>
       <li className="not-found">

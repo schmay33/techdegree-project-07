@@ -66,6 +66,7 @@ class App extends Component {
     render () {
       return (
         <BrowserRouter>
+            <h1 helptext="Built with React">Welcome to my photo gallery!</h1>
             <div className="container">
               <Nav />
               {

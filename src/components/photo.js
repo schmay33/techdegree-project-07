@@ -1,5 +1,6 @@
 import React from 'react';
 
+// Create a photo list item inside the PhotoList
 const Photo = ({ id, server, secret, title }) => {
   return(
     <li>
