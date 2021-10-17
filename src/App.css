@@ -33,6 +33,11 @@ a {
   border-right: none;
 }
 
+.search-form input:valid {
+  border: 3px solid green;
+  border-right: none;
+}
+
 input {
   font-size: 1em;
   width: 100%;

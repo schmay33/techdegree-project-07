@@ -28,7 +28,7 @@ class App extends Component {
     state = {
       photos:[],
       loading: true,
-      title:[],
+      title:'',
       searchString:''
     };
     
@@ -38,11 +38,12 @@ class App extends Component {
     }
     
     // Search Flickr and set the photos returned to state
-    performSearch = (query = 'cats') => {
+    performSearch = (query = 'lakes') => {
       //console.log('Performing Search...');
       this.setState({ loading: true });
       axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`)
         .then(response => {
+          console.log(response.data.photos.photo.length);
           if(response.data.photos.photo.length > 0 ){
             this.setState({
               photos: response.data.photos.photo,
@@ -53,9 +54,10 @@ class App extends Component {
         } else {
           this.setState({
             loading: false,
-            searchString: "noresults"
+            searchString: "noresults",
+            title: "noresults"
           });
-          this.props.history.replace("/noresults");
+          this.props.history.replace("/results/noresults");
         }
       })
       .catch(error => {
@@ -77,17 +79,17 @@ class App extends Component {
                    ? <p>loading...</p>
                    : <Switch>
                         <Route exact path="/" render={ () => <PhotoContainer data={this.state.photos} title={this.state.title} />} />
-                        <Route path="/search" render={ () => <SearchForm onSearch={this.performSearch}/>} />
                         <Route path="/lakes" render={ () => 
                           <PhotoContainer data={lakes} title={"lakes"} /> } />
                         <Route path="/dogs" render={ () => 
                           <PhotoContainer data={dogs} title={"dogs"} /> } />
                         <Route path="/mountains" render={ () => 
                           <PhotoContainer data={mountains} title={"mountains"} /> } />
-                        <Route exact path="/noresults" component={NotFound} />  
-                        <Route exact path="/404" component={PageNotFound} />
-                        <Route exact path="/:text" render={ () => 
+                        <Route exact path="/results/noresults" component={NotFound} /> 
+                        <Route path="/results/:text" render={ () => 
                           <PhotoContainer data={this.state.photos} title={this.state.title} /> } />
+                        <Route path="/search" render={ () => <SearchForm onSearch={this.performSearch}/>} />
+                        <Route exact path="/404" component={PageNotFound} />
                         <Route component={PageNotFound} /> 
                       </Switch>
               }
