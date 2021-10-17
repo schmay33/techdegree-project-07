@@ -23,6 +23,7 @@ import NotFound from './components/notFound';
 //Data fetching from config.
 import apiKey from './config';
 
+// Main App
 class App extends Component {
     state = {
       photos:[],
@@ -31,11 +32,12 @@ class App extends Component {
       searchString:''
     };
     
-
+    // Load default search 
     componentDidMount(){
       this.performSearch();
     }
-  
+    
+    // Search Flickr and set the photos returned to state
     performSearch = (query = 'cats') => {
       //console.log('Performing Search...');
       this.setState({ loading: true });
@@ -63,6 +65,7 @@ class App extends Component {
       });
     }
     
+    // Create the Browser Router to swtich between the different paths
     render () {
       return (
         <BrowserRouter>
