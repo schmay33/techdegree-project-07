@@ -28,6 +28,11 @@ a {
   cursor: pointer;
 }
 
+.search-form input:invalid {
+  border: 3px solid red;
+  border-right: none;
+}
+
 input {
   font-size: 1em;
   width: 100%;
