@@ -1,24 +1,30 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
+/**
+ * Search class to render a search form.
+ */
 class Search extends Component {
   
     state = {
     searchText: ''
   }
 
+  // Updates the searchText state when the form field is changed
   onSearchChange = (e) => {
     this.setState({ searchText: e.target.value });
   }
   
+  // Run this when the search form is submitted
+  // Searches for the entered text 
   handleSubmit = (e) => {
-    console.log("handle submit");
     e.preventDefault();
     this.props.onSearch(this.query.value);
     this.props.history.push(`/${this.state.searchText}`);
     e.currentTarget.reset();
   }
   
+  // Render the search form
   render() {  
     return (
       <form className="search-form" onSubmit={this.handleSubmit} >
