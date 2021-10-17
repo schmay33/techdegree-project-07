@@ -14,8 +14,8 @@ import './App.css';
 import { lakes, dogs, mountains } from './components/tag';
 
 //App components.
-import PhotoList from './components/photoList';
-import SearchForm from './components/search';
+import PhotoContainer from './components/photoContainer';
+import SearchForm from './components/searchForm';
 import Nav from './components/nav';
 import PageNotFound from "./components/pageNotFound";
 import NotFound from './components/notFound';
@@ -76,18 +76,18 @@ class App extends Component {
                  (this.state.loading)
                    ? <p>loading...</p>
                    : <Switch>
-                        <Route exact path="/" render={ () => <PhotoList data={this.state.photos} title={this.state.title} />} />
+                        <Route exact path="/" render={ () => <PhotoContainer data={this.state.photos} title={this.state.title} />} />
                         <Route path="/search" render={ () => <SearchForm onSearch={this.performSearch}/>} />
                         <Route path="/lakes" render={ () => 
-                          <PhotoList data={lakes} title={"lakes"} /> } />
+                          <PhotoContainer data={lakes} title={"lakes"} /> } />
                         <Route path="/dogs" render={ () => 
-                          <PhotoList data={dogs} title={"dogs"} /> } />
+                          <PhotoContainer data={dogs} title={"dogs"} /> } />
                         <Route path="/mountains" render={ () => 
-                          <PhotoList data={mountains} title={"mountains"} /> } />
+                          <PhotoContainer data={mountains} title={"mountains"} /> } />
                         <Route exact path="/noresults" component={NotFound} />  
                         <Route exact path="/404" component={PageNotFound} />
                         <Route exact path="/:text" render={ () => 
-                          <PhotoList data={this.state.photos} title={this.state.title} /> } />
+                          <PhotoContainer data={this.state.photos} title={this.state.title} /> } />
                         <Route component={PageNotFound} /> 
                       </Switch>
               }

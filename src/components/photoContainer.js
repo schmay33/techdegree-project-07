@@ -3,10 +3,10 @@ import Photo from './photo';
 import NotFound from './notFound';
 
 /**
- * PhotoList class to render the photo gallery container. Needs JSON data from Flickr.
+ * PhotoContainer class to render the photo gallery container. Needs JSON data from Flickr.
  * Creates Photo objects for each result.
  */
-export default class PhotoList extends Component {
+export default class PhotoContainer extends Component {
     // If the search is different from current query then run search
     componentDidUpdate() {
         if (this.props.searchInput !== this.props.query) {

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
 /**
- * Search class to render a search form.
+ * SearchForm class to render a search form.
  */
-class Search extends Component {
+class SearchForm extends Component {
   
   state = {
     searchText: ''
@@ -52,4 +52,4 @@ class Search extends Component {
   }
 }
 
-export default withRouter(Search)
+export default withRouter(SearchForm)
