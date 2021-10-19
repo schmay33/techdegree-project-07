@@ -3,6 +3,7 @@ import {
   BrowserRouter,
   Route,
   Switch,
+  Redirect,
   withRouter
 } from 'react-router-dom';
 import axios from 'axios';
@@ -18,85 +19,84 @@ import PhotoContainer from './components/photoContainer';
 import SearchForm from './components/searchForm';
 import Nav from './components/nav';
 import PageNotFound from "./components/pageNotFound";
-import NotFound from './components/notFound';
 
 //Data fetching from config.
 import apiKey from './config';
 
 // Main App
 class App extends Component {
-    state = {
-      photos:[],
-      loading: true,
-      title:'',
-      searchString:''
-    };
-    
-    // Load default search 
-    componentDidMount(){
-      this.performSearch();
+
+  source = axios.CancelToken.source();
+
+  state = {
+    images: [],
+    title: '',
+    loading: true
+  }
+
+  componentDidMount() {
+  // initial load of photos
+    this.performSearch();
+  }
+
+  componentWillUnmount() {
+    if (this.source) {
+      this.source.cancel("Landing Component got unmounted");
     }
-    
-    // Search Flickr and set the photos returned to state
-    performSearch = (query = 'lakes') => {
-      //console.log('Performing Search...');
-      this.setState({ loading: true });
-      axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`)
-        .then(response => {
-          console.log(response.data.photos.photo.length);
-          if(response.data.photos.photo.length > 0 ){
-            this.setState({
-              photos: response.data.photos.photo,
-              title: query,
-              searchString: query,
-              loading: false
-            })
-        } else {
-          this.setState({
-            loading: false,
-            searchString: "noresults",
-            title: "noresults"
-          });
-          this.props.history.replace("/results/noresults");
-        }
-      })
-      .catch(error => {
-        console.log('Error fetching and parsing data', error);
-        this.setState({loading: false});
-        this.props.history.replace("/404");
-      });
-    }
-    
-    // Create the Browser Router to swtich between the different paths
-    render () {
-      return (
-        <BrowserRouter>
-            <h1 helptext="Built with React">Welcome to my photo gallery!</h1>
-            <div className="container">
-              <Nav />
-              {
-                 (this.state.loading)
-                   ? <p>loading...</p>
-                   : <Switch>
-                        <Route exact path="/" render={ () => <PhotoContainer data={this.state.photos} title={this.state.title} />} />
-                        <Route path="/lakes" render={ () => 
-                          <PhotoContainer data={lakes} title={"lakes"} /> } />
-                        <Route path="/dogs" render={ () => 
-                          <PhotoContainer data={dogs} title={"dogs"} /> } />
-                        <Route path="/mountains" render={ () => 
-                          <PhotoContainer data={mountains} title={"mountains"} /> } />
-                        <Route exact path="/results/noresults" component={NotFound} /> 
-                        <Route path="/results/:text" render={ () => 
-                          <PhotoContainer data={this.state.photos} title={this.state.title} /> } />
-                        <Route path="/search" render={ () => <SearchForm onSearch={this.performSearch}/>} />
-                        <Route exact path="/404" component={PageNotFound} />
-                        <Route component={PageNotFound} /> 
-                      </Switch>
-              }
-            </div>
-        </BrowserRouter> 
-      )
-    }
+  }
+  
+  // Search Flickr and set the photos returned to state
+  performSearch = (query = 'lakes') => {
+    this.setState({ loading: true });
+    axios.get('https://www.flickr.com/services/rest', {
+       params: {
+          method: 'flickr.photos.search',
+          tags: query,
+          api_key: apiKey,
+          per_page: 24,
+          format: 'json',
+          nojsoncallback: 1,
+          cancelToken: this.source.token
+       }
+    })
+    .then(res => {
+        let data = res.data.photos.photo;
+        this.setState({
+           images: data,
+           title: query,
+           loading: false
+        })
+    })
+    .catch(err => {
+      console.log('Error: ', err.message);
+      this.setState({ isLoading: false });
+    });
+  }
+  
+  // Create the Browser Router to swtich between the different paths
+  render () {
+    return (
+      <BrowserRouter>
+        <h1>Welcome to my photo gallery!</h1>
+        <div className="container">
+        <SearchForm onSearch={this.performSearch} loading={this.loading} />
+        <Nav onSearch={this.performSearch} loading={this.loading}/>
+          {
+              (this.state.loading)
+                ? <p>loading...</p>
+                : <Switch>
+                    <Route exact path="/" render={() => <Redirect to="/Lakes" data={lakes}/>} />
+                    <Route path="/Lakes" render={() => <PhotoContainer title="Lakes" data={lakes} />} />
+                    <Route path="/Dogs" render={() => <PhotoContainer title="Dogs" data={dogs} />} />
+                    <Route path="/Mountains" render={() => <PhotoContainer title="Mountains" data={mountains} />} />
+                    <Route path="/search/:term" render={() => <PhotoContainer title={this.state.title} data={this.state.images} />} />
+                    <Route path="*" component={PageNotFound} />
+                  </Switch>
+          }
+        </div>
+      </BrowserRouter> 
+    )
+  }
 }
 
 

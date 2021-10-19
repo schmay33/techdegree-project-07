@@ -1,29 +1,39 @@
-import axios from "axios";
-import apiKey from "../config";
+import axios from 'axios';
+import apiKey from '../config';
 
-let lakes = {};
-let dogs= {};
-let mountains= {};
+// default categories
+const defaultCategories = ['lakes', 'dogs', 'mountains'];
 
-//Create Default Tag information
-const Tag = (query) => {
-    axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&text=${query}&per_page=24&format=json&nojsoncallback=1`)
-    .then(res => {
-        if(query === 'lakes'){
-            lakes = res.data.photos.photo
-        } 
-        if(query === 'dogs'){
-            dogs = res.data.photos.photo
-        } 
-        if(query === 'mountains'){
-            mountains = res.data.photos.photo
-        }
-    })
- }
+// initialize default variables
+let lakes = {}, dogs = {}, mountains = {};
 
- // Create default tags for main page
-Tag('lakes');
-Tag('dogs');
-Tag('mountains');
+let source = axios.CancelToken.source();
 
-export {lakes, dogs, mountains};
+// Run API search for default tags
+const search = query => {
+   axios.get('https://www.flickr.com/services/rest', {
+      params: {
+         method: 'flickr.photos.search',
+         tags: query,
+         api_key: apiKey,
+         per_page: 24,
+         format: 'json',
+         nojsoncallback: 1,
+         cancelToken: source.token
+      }
+   })
+   .then(res => {
+      const data = res.data.photos.photo;
+      query === 'lakes' 
+         ? lakes = data 
+         : query === 'dogs' 
+         ? dogs = data 
+         : mountains = data;
+   })
+   .catch(err => console.log('There was an error fetching and retrieving data', err));
+}
+
+//run the default search for each tag
+defaultCategories.forEach( category => search(category));
+
+export { lakes, dogs, mountains };
