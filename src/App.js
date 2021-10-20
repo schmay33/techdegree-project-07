@@ -40,7 +40,7 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    this.performSearch();
+    this.source.cancel("AXIOS Request Cancelled")
   }
   
   // Search Flickr and set the photos returned to state
