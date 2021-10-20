@@ -40,9 +40,7 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    if (this.source) {
-      this.source.cancel("Landing Component got unmounted");
-    }
+    this.performSearch();
   }
   
   // Search Flickr and set the photos returned to state
